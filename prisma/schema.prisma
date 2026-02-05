@@ -1,0 +1,89 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  APPROVER
+}
+
+enum MaintenanceStatus {
+  SCHEDULED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  password  String
+  name      String
+  role      Role     @default(APPROVER)
+  
+  bookingsAsAdmin   Booking[] @relation("AdminCreator")
+  bookingsAsAppr1   Booking[] @relation("Lvl1Approver")
+  bookingsAsAppr2   Booking[] @relation("Lvl2Approver")
+}
+
+model Vehicle {
+  id              Int      @id @default(autoincrement())
+  modelName       String
+  plateNumber     String   @unique
+  type            String   // Personnel / Freight
+  ownership       String   // Company / Rental
+  location        String   // Kantor Pusat, Cabang, Tambang 1-6
+  fuelConsumption Float    // Liter/km
+  lastService     DateTime?
+  currentFuel     Float    @default(100) // Current fuel percentage
+  bookings        Booking[]
+  maintenance     Maintenance[]
+}
+
+model Booking {
+  id            Int      @id @default(autoincrement())
+  vehicleId     Int
+  vehicle       Vehicle  @relation(fields: [vehicleId], references: [id])
+  driverName    String
+  
+  creatorId     Int
+  creator       User     @relation("AdminCreator", fields: [creatorId], references: [id])
+  
+  approver1Id   Int
+  approver1     User     @relation("Lvl1Approver", fields: [approver1Id], references: [id])
+  
+  approver2Id   Int
+  approver2     User     @relation("Lvl2Approver", fields: [approver2Id], references: [id])
+  
+  status        Int      @default(0) // 0:Pending, 1:Lvl1 Approved, 2:Final Approved, -1:Rejected
+  startDate     DateTime
+  endDate       DateTime
+  createdAt     DateTime @default(now())
+  
+  // Fuel tracking
+  fuelStart     Float?   // Fuel level at start (liters or %)
+  fuelEnd       Float?   // Fuel level at end
+  distanceKm    Float?   // Distance traveled in km
+  fuelUsed      Float?   // Calculated fuel used
+  createdAtBooking DateTime @default(now())
+}
+
+model Maintenance {
+  id              Int      @id @default(autoincrement())
+  vehicleId       Int
+  vehicle         Vehicle  @relation(fields: [vehicleId], references: [id])
+  description     String
+  scheduledDate   DateTime
+  completedDate   DateTime?
+  status          MaintenanceStatus @default(SCHEDULED)
+  estimatedCost   Float
+  actualCost      Float?
+  serviceType     String?
+  notes           String?
+  createdAt       DateTime @default(now())
+}
