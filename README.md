@@ -9,10 +9,62 @@ A vehicle monitoring and booking system for a nickel mining company with multipl
 - **Authentication**: JWT (JSON Web Token)
 - **Documentation**: Swagger/OpenAPI
 
+## Project Structure
+
+```
+src/
+├── auth/               # Authentication module
+│   ├── controllers/   # Auth controllers
+│   ├── services/      # Auth business logic
+│   ├── modules/        # Auth module definition
+│   ├── guards/         # JWT auth guards
+│   ├── strategies/     # JWT strategies
+│   └── dto/            # Auth DTOs
+├── bookings/           # Bookings management
+│   ├── controllers/
+│   ├── services/
+│   ├── modules/
+│   ├── dto/
+│   └── entities/
+├── vehicles/           # Vehicles management
+│   ├── controllers/
+│   ├── services/
+│   ├── modules/
+│   ├── dto/
+│   └── entities/
+├── maintenance/        # Maintenance scheduling
+│   ├── controllers/
+│   ├── services/
+│   ├── modules/
+│   └── dto/
+├── reports/            # Reports & statistics
+│   ├── controllers/
+│   ├── services/
+│   └── modules/
+├── root/               # Health check & info
+├── prisma/             # Database schema & migrations
+└── config/             # Configuration files
+```
+
+## Using Supabase for PostgreSQL
+
+This project supports using [Supabase](https://supabase.com/) as the PostgreSQL database provider. Supabase provides a hosted PostgreSQL database with additional features like auto-generated APIs, real-time subscriptions, and a web-based SQL editor.
+
+### Setting up Supabase
+
+1. Create a free account at [supabase.com](https://supabase.com/)
+2. Create a new project
+3. Go to Project Settings > Database to get your connection string
+4. Use the Supabase connection string in your `.env` file:
+
+```env
+DATABASE_URL="postgresql://postgres:[YOUR-PASSWORD]@db.[YOUR-PROJECT-REF].supabase.co:5432/postgres"
+```
+
 ## Requirements
 
 - Node.js 18+
-- PostgreSQL 14+
+- PostgreSQL 17+
 - npm or yarn
 
 ## Installation
@@ -36,9 +88,32 @@ npx prisma db seed
 Create a `.env` file with the following variables:
 
 ```env
+# For local development
 DATABASE_URL="postgresql://user:password@localhost:5432/vemo_db"
-JWT_SECRET="your-super-secret-jwt-key"
+
+# For Supabase (recommended)
+# DATABASE_URL="postgresql://postgres:[YOUR-PASSWORD]@db.[YOUR-PROJECT-REF].supabase.co:5432/postgres"
+
+JWT_SECRET="your-secret-jwt-key"
 PORT=3000
+```
+
+## Health Check
+
+The root endpoint provides health check and API information:
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/` | GET | Health check - returns status, timestamp, and service name |
+| `/info` | GET | API information - returns version and documentation link |
+
+Example response for `/`:
+```json
+{
+  "status": "ok",
+  "timestamp": "2026-02-05T05:45:00.000Z",
+  "service": "VEMO - Vehicle Monitoring & Booking System"
+}
 ```
 
 ## API Documentation
@@ -64,7 +139,7 @@ http://localhost:3000/api
 ### Vehicles
 - `GET /vehicles` - Get all vehicles
 - `GET /vehicles/:id` - Get vehicle by ID
-- `` - Create new vehicle (requires authPOST /vehicles)
+- `POST /vehicles` - Create new vehicle (requires auth)
 - `PATCH /vehicles/:id` - Update vehicle (requires auth)
 - `DELETE /vehicles/:id` - Delete vehicle (requires auth)
 
@@ -76,8 +151,8 @@ http://localhost:3000/api
 - `PATCH /bookings/:id/complete` - Complete booking with fuel data (requires auth)
 
 ### Reports
-- `GET /reports/export-excel` - Export bookings to Excel
-- `GET /reports/vehicle-usage` - Get vehicle usage statistics
+- `GET /reports/export-excel` - Export all bookings data to Excel file
+- `GET /reports/stats` - Get vehicle usage statistics for charts
 
 ### Maintenance
 - `GET /maintenance` - Get all maintenance records
@@ -143,7 +218,3 @@ npm run start:dev
 # Production mode
 npm run start:prod
 ```
-
-## License
-
-MIT

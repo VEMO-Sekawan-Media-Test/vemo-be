@@ -1,6 +1,6 @@
-// src/reports/reports.service.ts
+// src/reports/services/reports.service.ts
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
+import { PrismaService } from '../../prisma/prisma.service';
 import * as ExcelJS from 'exceljs';
 import { Response } from 'express';
 
