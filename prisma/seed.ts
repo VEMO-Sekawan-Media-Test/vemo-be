@@ -4,7 +4,10 @@ import * as bcrypt from 'bcrypt';
 const prisma = new PrismaClient();
 
 async function main() {
-  const password = await bcrypt.hash('password123', 10);
+  // Password yang berbeda untuk setiap user (best practice keamanan)
+  const adminPassword = await bcrypt.hash('V3m0@dm1n#2024!', 10);
+  const managerPassword = await bcrypt.hash('M4n@gerV3m0#Sec!', 10);
+  const directorPassword = await bcrypt.hash('D1r3ct0rP3rm!t#Key', 10);
 
   // seed users
   const admin = await prisma.user.upsert({
@@ -12,7 +15,7 @@ async function main() {
     update: {},
     create: {
       username: 'admin_vemo',
-      password,
+      password: adminPassword,
       name: 'Vemomin',
       role: Role.ADMIN,
     },
@@ -23,7 +26,7 @@ async function main() {
     update: {},
     create: {
       username: 'manager_1',
-      password,
+      password: managerPassword,
       name: 'Manager Operasional',
       role: Role.APPROVER,
     },
@@ -34,7 +37,7 @@ async function main() {
     update: {},
     create: {
       username: 'director_2',
-      password,
+      password: directorPassword,
       name: 'Direktur Regional',
       role: Role.APPROVER,
     },
