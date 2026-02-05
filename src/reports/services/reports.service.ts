@@ -57,33 +57,77 @@ export class ReportsService {
     await workbook.xlsx.write(res);
     res.end();
   }
-  async getVehicleUsageStats() {
-    const stats = await this.prisma.booking.groupBy({
-      by: ['vehicleId'],
-      _count: {
-        id: true,
-      },
-      where: {
-        status: 2, 
-      },
+
+  async getDashboardStats() {
+    // Get total vehicles
+    const totalVehicles = await this.prisma.vehicle.count();
+
+    // Get active bookings (status = 2 = approved and in progress)
+    const activeBookings = await this.prisma.booking.count({
+      where: { status: 2 },
     });
 
-    const detailedStats = await Promise.all(
-      stats.map(async (stat) => {
-        const vehicle = await this.prisma.vehicle.findUnique({
-          where: { id: stat.vehicleId },
-          select: { modelName: true, plateNumber: true },
-        });
-        if (!vehicle) {
-          return { label: `Kendaraan ID ${stat.vehicleId}`, count: stat._count.id };
-        }
-        return {
-          label: `${vehicle.modelName} (${vehicle.plateNumber})`,
-          count: stat._count.id,
-        };
-      }),
-    );
+    // Get pending approvals (status = 0 or 1)
+    const pendingApprovals = await this.prisma.booking.count({
+      where: { status: { in: [0, 1] } },
+    });
 
-    return detailedStats;
+    // Get total fuel used
+    const bookingsWithFuel = await this.prisma.booking.findMany({
+      where: { fuelUsed: { not: null } },
+      select: { fuelUsed: true },
+    });
+    const totalFuelUsed = bookingsWithFuel.reduce((sum, b) => sum + (b.fuelUsed || 0), 0);
+
+    // Get vehicles by location
+    const vehiclesByLocation = await this.prisma.vehicle.groupBy({
+      by: ['location'],
+      _count: { id: true },
+    });
+    const locationData: Record<string, number> = {};
+    vehiclesByLocation.forEach((v) => {
+      locationData[v.location] = v._count.id;
+    });
+
+    // Get bookings by month for trend chart
+    const bookingsByMonthRaw = await this.prisma.booking.groupBy({
+      by: ['startDate'],
+      _count: { id: true },
+    });
+    const monthlyData: Record<string, number> = {};
+    bookingsByMonthRaw.forEach((b) => {
+      const month = b.startDate.toISOString().slice(0, 7); // YYYY-MM
+      monthlyData[month] = (monthlyData[month] || 0) + b._count.id;
+    });
+
+    // Get bookings by vehicle type
+    const bookingsByTypeRaw = await this.prisma.booking.groupBy({
+      by: ['vehicleId'],
+      _count: { id: true },
+    });
+    
+    // Get vehicle types
+    const vehicles = await this.prisma.vehicle.findMany({
+      select: { id: true, type: true },
+    });
+    const typeMap = new Map(vehicles.map((v) => [v.id, v.type]));
+    
+    const typeData: Record<string, number> = { Personnel: 0, Freight: 0 };
+    bookingsByTypeRaw.forEach((b) => {
+      const vehicleType = typeMap.get(b.vehicleId) || 'Personnel';
+      if (typeData[vehicleType] !== undefined) {
+        typeData[vehicleType] += b._count.id;
+      }
+    });
+
+    return {
+      totalVehicles,
+      activeBookings,
+      pendingApprovals,
+      totalFuelUsed,
+      vehiclesByLocation: locationData,
+      bookingsByMonth: monthlyData,
+      bookingsByVehicleType: typeData,
+    };
   }
 }

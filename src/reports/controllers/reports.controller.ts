@@ -17,7 +17,7 @@ export class ReportsController {
    * @param res - Response object untuk mengirim file
    * @returns File Excel containing all booking data
    */
-  @Get('export-excel')
+  @Get('export')
   @ApiOperation({ summary: 'Ekspor semua data pemesanan ke file Excel' })
   @ApiSwaggerResponse({ status: 200, description: 'File Excel berhasil diunduh' })
   @ApiSwaggerResponse({ status: 500, description: 'Gagal membuat file Excel' })
@@ -26,14 +26,14 @@ export class ReportsController {
   }
 
   /**
-   * Ambil statistik pemakaian kendaraan untuk grafik
-   * @returns Data statistik pemakaian kendaraan
+   * Ambil statistik dashboard untuk grafik
+   * @returns Data statistik dashboard
    */
-  @Get('stats')
-  @ApiOperation({ summary: 'Ambil statistik pemakaian kendaraan untuk grafik' })
+  @Get('dashboard')
+  @ApiOperation({ summary: 'Ambil statistik dashboard untuk grafik' })
   @ApiSwaggerResponse({ status: 200, description: 'Statistik berhasil diambil' })
   @ApiSwaggerResponse({ status: 500, description: 'Gagal mengambil statistik' })
-  async getStats() {
-    return this.reportsService.getVehicleUsageStats();
+  async getDashboard() {
+    return this.reportsService.getDashboardStats();
   }
 }

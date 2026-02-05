@@ -125,8 +125,6 @@ http://localhost:3000/api
 
 ## Default Users (after seeding)
 
-> **Security Note:** Setiap user memiliki password yang berbeda sebagai best practice keamanan.
-
 | Username | Password | Role | Description |
 |----------|----------|------|-------------|
 | admin_vemo | `V3m0@dm1n#2024!` | ADMIN | Admin VEMO - Akses penuh ke sistem |

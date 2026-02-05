@@ -27,8 +27,8 @@ model User {
   role      Role     @default(APPROVER)
   
   bookingsAsAdmin   Booking[] @relation("AdminCreator")
-  bookingsAsAppr1   Booking[] @relation("Lvl1Approver")
-  bookingsAsAppr2   Booking[] @relation("Lvl2Approver")
+  bookingsAsAppr1  Booking[] @relation("Lvl1Approver")
+  bookingsAsAppr2  Booking[] @relation("Lvl2Approver")
 }
 
 model Vehicle {
@@ -70,7 +70,6 @@ model Booking {
   fuelEnd       Float?   // Fuel level at end
   distanceKm    Float?   // Distance traveled in km
   fuelUsed      Float?   // Calculated fuel used
-  createdAtBooking DateTime @default(now())
 }
 
 model Maintenance {
