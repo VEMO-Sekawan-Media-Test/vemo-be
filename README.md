@@ -1,220 +1,349 @@
-# VEMO - Vehicle Monitoring & Booking System
+# 🚗 VEMO - Vehicle Monitoring & Booking System
 
-A vehicle monitoring and booking system for a nickel mining company with multiple regions, branches, and mining sites.
+<div align="center">
 
-## Tech Stack
+![VEMO Logo](https://raw.githubusercontent.com/your-repo/vemo/main/vemo-fe/public/images/vemo_ic.png)
 
-- **Framework**: NestJS (Node.js)
-- **Database**: PostgreSQL with Prisma ORM
-- **Authentication**: JWT (JSON Web Token)
-- **Documentation**: Swagger/OpenAPI
+**Sistem monitoring dan pemesanan kendaraan untuk perusahaan penambangan nikel**  
+dengan multiple regions, branches, dan mining sites.
 
-## Project Structure
+[![NestJS](https://img.shields.io/badge/-NestJS-E0234E?style=for-the-badge&logo=nestjs)](https://nestjs.com/)
+[![PostgreSQL](https://img.shields.io/badge/-PostgreSQL-4169E1?style=for-the-badge&logo=postgresql)](https://www.postgresql.org/)
+[![Prisma](https://img.shields.io/badge/-Prisma-2D3748?style=for-the-badge&logo=prisma)](https://www.prisma.io/)
+[![JWT](https://img.shields.io/badge/-JWT-000000?style=for-the-badge&logo=json-web-tokens)](https://jwt.io/)
+
+[![Deploy on Railway](https://img.shields.io/badge/🚂-Deploy_on_Railway-0B0B0B?style=for-the-badge&logo=railway)](https://railway.app/)
+
+</div>
+
+---
+
+## 📋 Table of Contents
+
+1. [🎯 Overview](#-overview)
+2. [🛠️ Tech Stack](#️-tech-stack)
+3. [📁 Project Structure](#-project-structure)
+4. [🏗️ Architecture Diagram](#️-architecture-diagram)
+5. [📊 Activity Diagram](#-activity-diagram)
+6. [🔄 Sequence Diagram](#-sequence-diagram)
+7. [🗄️ Physical Data Model](#️-physical-data-model)
+8. [🚀 Getting Started](#-getting-started)
+9. [📚 API Documentation](#-api-documentation)
+10. [🔐 Default Users](#-default-users)
+11. [📝 Database Schema](#-database-schema)
+
+---
+
+## 🎯 Overview
+
+VEMO adalah sistem informasi untuk mengelola:
+- 🚗 **Kendaraan** - CRUD kendaraan perusahaan dan rental
+- 📅 **Pemesanan** - Booking kendaraan dengan sistem persetujuan multi-level
+- 🔧 **Pemeliharaan** - Jadwal service dan maintenance kendaraan
+- 📈 **Laporan** - Export data dan statistik penggunaan
+
+---
+
+## 🛠️ Tech Stack
+
+| Technology | Description |
+|------------|-------------|
+| � Framework | NestJS (Node.js) |
+| 🗄️ Database | PostgreSQL dengan Prisma ORM |
+| 🔐 Auth | JWT (JSON Web Token) |
+| 📖 Docs | Swagger/OpenAPI |
+| 🚂 Deploy | Railway |
+
+---
+
+## 📁 Project Structure
 
 ```
 src/
-├── auth/               # Authentication module
-│   ├── controllers/   # Auth controllers
-│   ├── services/      # Auth business logic
-│   ├── modules/        # Auth module definition
-│   ├── guards/         # JWT auth guards
-│   ├── strategies/     # JWT strategies
-│   └── dto/            # Auth DTOs
-├── bookings/           # Bookings management
+├── 🔐 auth/              # Modul Autentikasi
+│   ├── controllers/      # Endpoint auth
+│   ├── services/         # Logika bisnis
+│   ├── modules/          # Konfigurasi modul
+│   ├── guards/           # Proteksi route
+│   ├── strategies/       # Strategi JWT
+│   └── dto/              # Data Transfer Objects
+│
+├── 📅 bookings/          # Pemesanan Kendaraan
 │   ├── controllers/
 │   ├── services/
 │   ├── modules/
 │   ├── dto/
 │   └── entities/
-├── vehicles/           # Vehicles management
+│
+├── 🚗 vehicles/          # Manajemen Kendaraan
 │   ├── controllers/
 │   ├── services/
 │   ├── modules/
 │   ├── dto/
 │   └── entities/
-├── maintenance/        # Maintenance scheduling
+│
+├── 🔧 maintenance/       # Pemeliharaan
 │   ├── controllers/
 │   ├── services/
 │   ├── modules/
 │   └── dto/
-├── reports/            # Reports & statistics
+│
+├── 📈 reports/          # Laporan & Statistik
 │   ├── controllers/
 │   ├── services/
 │   └── modules/
-├── root/               # Health check & info
-├── prisma/             # Database schema & migrations
-└── config/             # Configuration files
+│
+├── 👤 users/            # Manajemen User
+│   ├── controllers/
+│   ├── services/
+│   └── modules/
+│
+├── 📊 logging/          # Logging Service
+├── 🏥 root/             # Health Check
+└── 🗄️ prisma/           # Schema Database
 ```
 
-## Using Supabase for PostgreSQL
+---
 
-This project supports using [Supabase](https://supabase.com/) as the PostgreSQL database provider. Supabase provides a hosted PostgreSQL database with additional features like auto-generated APIs, real-time subscriptions, and a web-based SQL editor.
+## 📊 Activity Diagram
 
-### Setting up Supabase
+![Activity Diagram](docs/diagrams/activity-diagram.png)
 
-1. Create a free account at [supabase.com](https://supabase.com/)
-2. Create a new project
-3. Go to Project Settings > Database to get your connection string
-4. Use the Supabase connection string in your `.env` file:
+**Keterangan:**
+- Diagram alur aktivitas user dari login hingga proses pemesanan kendaraan
+- Menunjukkan keputusan berdasarkan role (ADMIN/APPROVER)
+- Flow persetujuan booking dengan dua level
 
-```env
-DATABASE_URL="postgresql://postgres:[YOUR-PASSWORD]@db.[YOUR-PROJECT-REF].supabase.co:5432/postgres"
-```
+---
 
-## Requirements
+## 🔄 Sequence Diagram
 
-- Node.js 18+
-- PostgreSQL 17+
-- npm or yarn
+![Sequence Diagram](docs/diagrams/sequence-diagram.png)
 
-## Installation
+**Keterangan:**
+- Interaksi antara Frontend, Backend, dan Database
+- Proses login dengan JWT token generation
+- Flow complete booking dengan data BBM
+
+---
+
+## 🗄️ Physical Data Model
+
+![ERD](docs/diagrams/erd-diagram.png)
+
+**Keterangan:**
+- Relasi antar tabel dalam database PostgreSQL
+- Primary Key dan Foreign Key relationships
+- Status enum untuk bookings dan maintenance
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+| Requirement | Version |
+|------------|---------|
+| 🟢 Node.js | 18+ |
+| 🐘 PostgreSQL | 17+ |
+| 📦 npm/yarn | Latest |
+
+### Installation
 
 ```bash
-# Install dependencies
+# 1. Clone repository
+git clone https://github.com/your-repo/vemo.git
+cd vemo/vemo-be
+
+# 2. Install dependencies
 npm install
 
-# Generate Prisma Client
+# 3. Generate Prisma Client
 npx prisma generate
 
-# Run database migrations
+# 4. Run database migrations
 npx prisma migrate dev
 
-# Seed initial data (optional)
+# 5. Seed initial data (optional)
 npx prisma db seed
+
+# 6. Start development server
+npm run start:dev
 ```
 
-## Environment Variables
+### Environment Variables
 
-Create a `.env` file with the following variables:
+Buat file `.env` dengan variabel berikut:
 
 ```env
-# For local development
+# 🔧 Database
 DATABASE_URL="postgresql://user:password@localhost:5432/vemo_db"
 
-# For Supabase (recommended)
-# DATABASE_URL="postgresql://postgres:[YOUR-PASSWORD]@db.[YOUR-PROJECT-REF].supabase.co:5432/postgres"
+# 🚂 Railway Production
+# DATABASE_URL="postgresql://user:password@containers-us-west-xxx.railway.app:xxx/railway"
 
-JWT_SECRET="your-secret-jwt-key"
+# 🔐 JWT Secret
+JWT_SECRET="your-super-secret-jwt-key-min-32-chars"
+
+# 🌐 Server Port
 PORT=3000
 ```
 
-## Health Check
+### Deployment ke Railway
 
-The root endpoint provides health check and API information:
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new)
 
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/` | GET | Health check - returns status, timestamp, and service name |
-| `/info` | GET | API information - returns version and documentation link |
+1. **Connect GitHub repository** ke Railway
+2. **Add PostgreSQL** database dari Railway dashboard
+3. **Set environment variables** di Railway:
+   - `DATABASE_URL` (auto-generated)
+   - `JWT_SECRET`
+4. **Deploy** - Railway
 
-Example response for `/`:
-```json
-{
-  "status": "ok",
-  "timestamp": "2026-02-05T05:45:00.000Z",
-  "service": "VEMO - Vehicle Monitoring & Booking System"
-}
-```
+---
 
-## API Documentation
+## 📚 API Documentation
 
-After starting the server, access Swagger documentation at:
-```
-http://localhost:3000/api
-```
+### 🔗 Base URL
 
-## Default Users (after seeding)
+| Environment | URL |
+|------------|-----|
+| 🏠 Local | `http://localhost:3000` |
+| 🚂 Production | `https://vemo-be-production.up.railway.app` |
+| 📖 Swagger Docs | `/api/docs` |
+
+### 📋 Endpoint List
+
+#### 🔐 Authentication
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/auth/login` | Login untuk mendapatkan JWT token |
+| `GET` | `/auth/me` | Get current user info |
+
+#### 🚗 Vehicles
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/vehicles` | Get all vehicles |
+| `GET` | `/vehicles/:id` | Get vehicle by ID |
+| `POST` | `/vehicles` | Create new vehicle |
+| `PATCH` | `/vehicles/:id` | Update vehicle |
+| `DELETE` | `/vehicles/:id` | Delete vehicle |
+
+#### 📅 Bookings
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/bookings` | Get all bookings |
+| `POST` | `/bookings` | Create booking |
+| `GET` | `/bookings/pending-approvals` | Get pending approvals |
+| `PATCH` | `/bookings/:id/approve` | Approve booking |
+| `PATCH` | `/bookings/:id/reject` | Reject booking |
+| `PATCH` | `/bookings/:id/complete` | Complete with fuel data |
+
+#### 🔧 Maintenance
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/maintenance` | Get all maintenance |
+| `GET` | `/maintenance/:id` | Get by ID |
+| `POST` | `/maintenance` | Schedule maintenance |
+| `PATCH` | `/maintenance/:id/status` | Update status |
+| `PATCH` | `/maintenance/:id/complete` | Mark completed |
+| `GET` | `/maintenance/upcoming` | Upcoming maintenance |
+
+#### 📈 Reports
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/reports/dashboard` | Dashboard statistics |
+| `GET` | `/reports/export` | Export bookings to Excel |
+
+---
+
+## 🔐 Default Users
 
 | Username | Password | Role | Description |
 |----------|----------|------|-------------|
-| admin_vemo | `V3m0@dm1n#2024!` | ADMIN | Admin VEMO - Akses penuh ke sistem |
-| manager_1 | `M4n@gerV3m0#Sec!` | APPROVER | Manager Operasional - Persetujuan level 1 |
-| director_2 | `D1r3ct0rP3rm!t#Key` | APPROVER | Direktur Regional - Persetujuan level 2 |
+| `admin_vemo` | `V3m0@dm1n#2024!` | 👑 ADMIN | Full system access |
+| `manager_1` | `M4n@gerV3m0#Sec!` | 👤 APPROVER | Level 1 approval |
+| `director_2` | `D1r3ct0rP3rm!t#Key` | 👤 APPROVER | Level 2 approval |
 
-## API Endpoints
+---
 
-### Authentication
-- `POST /auth/login` - Login to get JWT token
+## 📝 Database Schema
 
-### Vehicles
-- `GET /vehicles` - Get all vehicles
-- `GET /vehicles/:id` - Get vehicle by ID
-- `POST /vehicles` - Create new vehicle (requires auth)
-- `PATCH /vehicles/:id` - Update vehicle (requires auth)
-- `DELETE /vehicles/:id` - Delete vehicle (requires auth)
+### 👤 Users Table
 
-### Bookings
-- `GET /bookings` - Get all bookings
-- `POST /bookings` - Create booking (requires auth)
-- `PATCH /bookings/:id/approve` - Approve booking (requires auth)
-- `PATCH /bookings/:id/reject` - Reject booking (requires auth)
-- `PATCH /bookings/:id/complete` - Complete booking with fuel data (requires auth)
+| Column | Type | Description |
+|--------|------|-------------|
+| `id` | INT | Primary Key |
+| `username` | VARCHAR(50) | Unique username |
+| `password` | VARCHAR(255) | Hashed password |
+| `name` | VARCHAR(100) | Full name |
+| `role` | VARCHAR(20) | `ADMIN` or `APPROVER` |
+| `created_at` | TIMESTAMP | Creation date |
+| `updated_at` | TIMESTAMP | Last update |
 
-### Reports
-- `GET /reports/export-excel` - Export all bookings data to Excel file
-- `GET /reports/stats` - Get vehicle usage statistics for charts
+### 🚗 Vehicles Table
 
-### Maintenance
-- `GET /maintenance` - Get all maintenance records
-- `GET /maintenance/:id` - Get maintenance by ID
-- `GET /maintenance/upcoming` - Get upcoming maintenance (query param: days)
-- `GET /maintenance/vehicle/:id` - Get vehicle maintenance history
-- `POST /maintenance` - Schedule maintenance (requires auth)
-- `PATCH /maintenance/:id/complete` - Mark maintenance as completed (requires auth)
+| Column | Type | Description |
+|--------|------|-------------|
+| `id` | INT | Primary Key |
+| `plateNumber` | VARCHAR(20) | Unique license plate |
+| `modelName` | VARCHAR(100) | Vehicle model |
+| `type` | VARCHAR(50) | Personnel/Freight |
+| `ownership` | VARCHAR(50) | Company/Rental |
+| `location` | VARCHAR(100) | Site location |
+| `status` | VARCHAR(20) | AVAILABLE/IN_USE/MAINTENANCE |
 
-## Database Schema
+### 📅 Bookings Table
 
-### Users
-- `id` - Primary key
-- `username` - Unique username
-- `password` - Hashed password
-- `name` - Full name
-- `role` - ADMIN or APPROVER
+| Column | Type | Description |
+|--------|------|-------------|
+| `id` | INT | Primary Key |
+| `vehicleId` | INT | FK → vehicles |
+| `userId` | INT | FK → users (creator) |
+| `purpose` | TEXT | Booking purpose |
+| `startDate` | TIMESTAMP | Start date/time |
+| `endDate` | TIMESTAMP | End date/time |
+| `status` | VARCHAR(20) | PENDING/APPROVED/REJECTED/COMPLETED |
+| `approvedBy` | INT | FK → users (approver) |
+| `approvedAt` | TIMESTAMP | Approval time |
 
-### Vehicles
-- `id` - Primary key
-- `modelName` - Vehicle model name
-- `plateNumber` - Unique license plate
-- `type` - Personnel or Freight
-- `ownership` - Company or Rental
-- `location` - Kantor Pusat, Cabang, Tambang A-F
-- `fuelConsumption` - Liters per km
-- `lastService` - Last service date
-- `currentFuel` - Current fuel percentage
+### 🔧 Maintenance Table
 
-### Bookings
-- `id` - Primary key
-- `vehicleId` - Foreign key to Vehicle
-- `driverName` - Driver name
-- `creatorId` - Foreign key to User (creator)
-- `approver1Id` - Foreign key to User (level 1 approver)
-- `approver2Id` - Foreign key to User (level 2 approver)
-- `status` - 0: Pending, 1: Lvl1 Approved, 2: Final Approved, -1: Rejected
-- `startDate` - Booking start date
-- `endDate` - Booking end date
-- `fuelStart` - Fuel level at start
-- `fuelEnd` - Fuel level at end
-- `distanceKm` - Distance traveled
-- `fuelUsed` - Calculated fuel used
+| Column | Type | Description |
+|--------|------|-------------|
+| `id` | INT | Primary Key |
+| `vehicleId` | INT | FK → vehicles |
+| `description` | TEXT | Maintenance description |
+| `serviceType` | VARCHAR(100) | Type of service |
+| `scheduledDate` | TIMESTAMP | Scheduled date |
+| `completedDate` | TIMESTAMP | Completion date |
+| `estimatedCost` | DECIMAL(12,2) | Estimated cost |
+| `actualCost` | DECIMAL(12,2) | Actual cost |
+| `status` | VARCHAR(20) | SCHEDULED/IN_PROGRESS/COMPLETED/CANCELLED |
 
-### Maintenance
-- `id` - Primary key
-- `vehicleId` - Foreign key to Vehicle
-- `description` - Maintenance description
-- `scheduledDate` - Scheduled date
-- `completedDate` - Completed date
-- `status` - SCHEDULED, IN_PROGRESS, COMPLETED, CANCELLED
-- `estimatedCost` - Estimated cost
-- `actualCost` - Actual cost
-- `serviceType` - Type of service
-- `notes` - Additional notes
+---
 
-## Running the Application
+## 🏥 Health Check
 
-```bash
-# Development mode
-npm run start:dev
-
-# Production mode
-npm run start:prod
 ```
+GET /
+```
+
+**Response:**
+```json
+{
+  "status": "ok",
+  "timestamp": "2026-02-06T06:00:00.000Z",
+  "service": "VEMO - Vehicle Monitoring & Booking System",
+  "version": "1.0.0"
+}
+```
+
+---
+
+</div>
