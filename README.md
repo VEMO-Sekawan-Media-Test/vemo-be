@@ -1,4 +1,4 @@
-# VEMO - Vehicle Monitoring & Booking System
+# <div align="center">VEMO - Vehicle Monitoring & Booking System</div>
 
 <div align="center">
 
@@ -7,7 +7,6 @@ dengan multiple regions, branches, dan mining sites.
 
 </div>
 
----
 
 ## 📋 Table of Contents
 
